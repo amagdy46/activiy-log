@@ -12,12 +12,11 @@ import {
 } from "react-icons/fa6";
 import { formatDate } from "./utils";
 import { IoFilter } from "react-icons/io5";
-import { APIResponse } from "../type";
+import { APIResponse, Event } from "../type";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const ActivityLog = () => {
-
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
@@ -25,12 +24,37 @@ const ActivityLog = () => {
     targetId: "",
     actionId: "",
   });
+  const [events, setEvents] = useState<Event[]>([]);
   const [isLive, setIsLive] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const { data, error, mutate } = useSWR<APIResponse>(
     `/api/events?page=${page}&pageSize=10&search=${search}&actorId=${filters.actorId}&targetId=${filters.targetId}&actionId=${filters.actionId}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+
+  useEffect(() => {
+    if (data) {
+      if (isLive) {
+        setEvents((prevEvents) => {
+          const newEventIds = data.events.map((event) => event.id);
+          console.log(newEventIds);
+          const filteredPrevEvents = prevEvents.filter(
+            (event) => !newEventIds.includes(event.id)
+          );
+          return [...data.events, ...filteredPrevEvents];
+        });
+      } else {
+        setEvents((prevEvents) => [...prevEvents, ...data.events]);
+        setIsLoadingMore(false);
+      }
+    }
+  }, [data, isLive]);
+
   useEffect(() => {
     mutate();
   }, [page, search, filters, mutate]);
@@ -61,12 +85,13 @@ const ActivityLog = () => {
     });
   };
 
-  const toggleLive = () => {
-    setIsLive(!isLive);
-  };
-
   const exportToCSV = () => {
     // Implement your CSV export logic here
+  };
+
+  const loadMore = () => {
+    setIsLoadingMore(true);
+    setPage((prevPage) => prevPage + 1);
   };
 
   if (error) return <div>Failed to load</div>;
@@ -116,9 +141,9 @@ const ActivityLog = () => {
             <h4 className="py-3 px-4">DATE</h4>
           </div>
         </div>
-        {data ? (
+        {events.length ? (
           <div className="flex flex-col">
-            {data.events.map((event) => (
+            {events.map((event) => (
               <div
                 key={event.id}
                 className="hover:bg-gray-100 border-b py-4 px-5 grid grid-cols-3 text-gray-950 text-sm"
@@ -141,35 +166,51 @@ const ActivityLog = () => {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            <div className=" py-4 px-5 grid grid-cols-4 text-gray-950 text-sm">
+          Array.from({ length: 10 }).map((_, index) => (
+            <div
+              key={index}
+              className="py-4 px-5 grid grid-cols-3 text-gray-950 text-sm"
+            >
               <div className="flex items-center">
                 <Skeleton circle height={25} width={25} className="mr-4" />
                 <Skeleton width={135} height={14} />
               </div>
               <Skeleton width={188} height={14} />
-              <Skeleton width={100} height={14} />
-              <FaChevronRight className="text-gray-400" />
+              <div className="flex items-center justify-between">
+                <Skeleton width={100} height={14} />
+                <div className="text-gray-300 mr-4 cursor-pointer">
+                  <FaChevronRight />
+                </div>
+              </div>
             </div>
-          </div>
+          ))
         )}
+        {isLoadingMore &&
+          Array.from({ length: 10 }).map((_, index) => (
+            <div
+              key={index}
+              className="py-4 px-5 grid grid-cols-3 text-gray-950 text-sm"
+            >
+              <div className="flex items-center">
+                <Skeleton circle height={25} width={25} className="mr-4" />
+                <Skeleton width={135} height={14} />
+              </div>
+              <Skeleton width={188} height={14} />
+              <div className="flex items-center justify-between">
+                <Skeleton width={100} height={14} />
+                <div className="text-gray-300 mr-4 cursor-pointer">
+                  <FaChevronRight />
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          disabled={page === 1}
-          className="px-4 py-2 bg-gray-300 rounded"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setPage((prev) => prev + 1)}
-          disabled={data && data.events.length < 10}
-          className="px-4 py-2 bg-gray-300 rounded"
-        >
-          Next
-        </button>
-      </div>
+      <button
+        onClick={loadMore}
+        className="flex w-full justify-center rounded-b-lg bg-gray-200 text-gray-500 font-semibold py-4"
+      >
+        Load More
+      </button>
     </div>
   );
 };
