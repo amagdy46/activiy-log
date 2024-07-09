@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "ts-node --compiler-options '{\"module\":\"commonjs\"}' prisma/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@prisma/client": "^5.16.1",
     "autoprefixer": "^10.4.19",
     "next": "14.2.4",
