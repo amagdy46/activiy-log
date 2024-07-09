@@ -42,7 +42,6 @@ const ActivityLog = () => {
       if (isLive) {
         setEvents((prevEvents) => {
           const newEventIds = data.events.map((event) => event.id);
-          console.log(newEventIds);
           const filteredPrevEvents = prevEvents.filter(
             (event) => !newEventIds.includes(event.id)
           );
@@ -64,7 +63,7 @@ const ActivityLog = () => {
     if (isLive) {
       interval = setInterval(() => {
         mutate();
-      }, 5000); // Fetch every 5 seconds
+      }, 5000);
     } else if (interval) {
       clearInterval(interval);
     }
