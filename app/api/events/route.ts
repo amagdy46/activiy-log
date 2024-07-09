@@ -78,6 +78,7 @@ export async function GET(req: NextRequest) {
       where: filters,
       skip,
       take,
+      orderBy: { occurredAt: "desc" },
       include: { action: true },
     });
     const total = await prisma.event.count({ where: filters });
