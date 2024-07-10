@@ -65,8 +65,9 @@ export async function GET(req: NextRequest) {
   const filters: any = {};
   if (search) {
     filters.OR = [
-      { actorName: { contains: search } },
-      { targetName: { contains: search } },
+      { actorName: { contains: search, mode: "insensitive" } },
+      { targetName: { contains: search, mode: "insensitive" } },
+      { action: { name: { contains: search, mode: "insensitive" } } },
     ];
   }
   if (actorId) filters.actorId = actorId;
@@ -83,7 +84,7 @@ export async function GET(req: NextRequest) {
     });
     const total = await prisma.event.count({ where: filters });
     return NextResponse.json(
-      { events, total, page, pageSize },
+      { events: events || [], total, page, pageSize },
       { status: 200 }
     );
   } catch (error) {
