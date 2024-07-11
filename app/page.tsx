@@ -1,21 +1,21 @@
 "use client";
 
-import useSWR from "swr";
+import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import {
   FaChevronDown,
   FaChevronRight,
   FaCircle,
   FaDownload,
-  FaFilter,
 } from "react-icons/fa6";
-import { formatDate } from "./utils";
 import { IoFilter } from "react-icons/io5";
-import { APIResponse, Event } from "./types";
-import { mkConfig, generateCsv, download } from "export-to-csv";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import useSWR from "swr";
 import { useDebounceValue } from "usehooks-ts";
+import { APIResponse, Event } from "./types";
+import { formatDate } from "./utils";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -32,15 +32,13 @@ const ActivityLog = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
-  console.log(search);
   const { data, error, mutate } = useSWR<APIResponse>(
     `/api/events?page=${page}&pageSize=10&search=${search}&actorId=${filters.actorId}&targetId=${filters.targetId}&actionId=${filters.actionId}`,
     fetcher
   );
 
-  console.log(data);
   useEffect(() => {
-    if (data) {
+    if (data?.events.length) {
       setEvents((prevEvents) => {
         const newEventIds = data.events.map((event) => event.id);
         const filteredPrevEvents = prevEvents.filter(
@@ -56,11 +54,12 @@ const ActivityLog = () => {
   }, [data, isLive]);
 
   useEffect(() => {
+    if (search === "") return;
     setEvents([]);
     setPage(1);
     mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filters]);
+  }, [search]);
 
   useEffect(() => {
     if (page > 1) {
@@ -118,8 +117,16 @@ const ActivityLog = () => {
     );
   };
 
-  if (error) return <div>Failed to load</div>;
-
+  if (true)
+    return (
+      <div className="flex flex-col items-center justify-center h-full mt-48 p-24">
+        <FaExclamationTriangle className="text-red-500 text-6xl" />
+        <h2 className="mt-4 text-2xl font-bold text-red-500">Failed to load</h2>
+        <p className="text-gray-600 mt-2">
+          There was an error loading the data. Please try again later.
+        </p>
+      </div>
+    );
   return (
     <div className="container mx-auto py-16 h-dvh">
       <div className="min-w-full border rounded-t-2xl text-black shadow-sm">
@@ -271,6 +278,3 @@ const ActivityLog = () => {
 };
 
 export default ActivityLog;
-function useDebounce(search: string, arg1: number) {
-  throw new Error("Function not implemented.");
-}
