@@ -1,4 +1,3 @@
-import React from "react";
 import { Event } from "../types";
 import { formatDate } from "../utils";
 
@@ -6,7 +5,7 @@ type ExpandedEventProps = {
   event: Event;
 };
 
-const ExpandedEvent: React.FC<ExpandedEventProps> = ({ event }) => {
+const ExpandedEvent = ({ event }: ExpandedEventProps) => {
   return (
     <div className="relative col-span-3 mt-3 min-h-72 text-black">
       <div className="absolute -left-9 w-[105%] p-8 bg-white border border-gray-300 rounded-lg mt-2 shadow-xl z-10">

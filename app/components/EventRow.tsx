@@ -1,4 +1,3 @@
-import React from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { Event } from "../types";
 import { formatDate } from "../utils";
@@ -9,11 +8,7 @@ type EventRowProps = {
   toggleExpand: (eventId: string) => void;
 };
 
-const EventRow: React.FC<EventRowProps> = ({
-  event,
-  isExpanded,
-  toggleExpand,
-}) => {
+const EventRow = ({ event, isExpanded, toggleExpand }: EventRowProps) => {
   return (
     <div
       className="hover:bg-gray-100 border-b py-4 px-5 grid grid-cols-3 text-gray-950 text-sm cursor-pointer"

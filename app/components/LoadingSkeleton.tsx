@@ -1,4 +1,3 @@
-import React from "react";
 import { FaChevronRight } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -7,7 +6,7 @@ type LoadingSkeletonProps = {
   count: number;
 };
 
-const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({ count }) => {
+const LoadingSkeleton = ({ count }: LoadingSkeletonProps) => {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (

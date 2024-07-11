@@ -1,4 +1,3 @@
-import React from "react";
 import { IoFilter } from "react-icons/io5";
 import { FaDownload, FaCircle } from "react-icons/fa6";
 import { Event } from "../types";
@@ -13,14 +12,14 @@ type SearchBarProps = {
   events: Event[];
 };
 
-const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBar = ({
   search,
   onSearchChange,
   setFilters,
   setIsLive,
   isLive,
   events,
-}) => {
+}: SearchBarProps) => {
   return (
     <div className="p-4 bg-[#f5f5f5] rounded-t-2xl">
       <div className="mb-4 flex w-full p-0 bg-[#f5f5f5] text-xs text-gray-500 border border-gray-300 rounded-lg">
