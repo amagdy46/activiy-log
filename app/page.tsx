@@ -2,6 +2,7 @@
 
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useEffect, useState } from "react";
+import { FaExclamationTriangle } from "react-icons/fa";
 import {
   FaChevronDown,
   FaChevronRight,
@@ -15,7 +16,6 @@ import useSWR from "swr";
 import { useDebounceValue } from "usehooks-ts";
 import { APIResponse, Event } from "./types";
 import { formatDate } from "./utils";
-import { FaExclamationTriangle } from "react-icons/fa";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -129,9 +129,9 @@ const ActivityLog = () => {
     );
   return (
     <div className="container mx-auto py-16 h-dvh">
-      <div className="min-w-full border rounded-t-2xl text-black shadow-sm">
-        <div className="p-4 bg-gray-200 rounded-t-2xl">
-          <div className="mb-4 flex w-full p-0 bg-gray-200 text-xs text-gray-500 border border-gray-300 rounded-lg">
+      <div className="min-w-full border rounded-t-2xl text-gray-400 shadow-sm">
+        <div className="p-4 bg-[#f5f5f5] rounded-t-2xl">
+          <div className="mb-4 flex w-full p-0 bg-[#f5f5f5] text-xs text-gray-500 border border-gray-300 rounded-lg">
             <input
               type="text"
               className="w-full px-4 py-3 bg-transparent text-sm "
@@ -199,27 +199,101 @@ const ActivityLog = () => {
                   </div>
                 </div>
                 {expandedEventId === event.id && (
-                  <div className="p-5 bg-gray-50">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h5 className="font-semibold">ACTOR</h5>
-                        <p>Name: {event.actorName}</p>
-                        <p>Email: {event.targetName}</p>
-                        <p>ID: {event.actorId}</p>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold">ACTION</h5>
-                        <p>Name: {event.action.name}</p>
-                        <p>Object: {event.action.name}</p>
-                        <p>ID: {event.action.id}</p>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold">METADATA</h5>
-                        <p>{event.metadata.description}</p>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold">TARGET</h5>
-                        <p>{event.targetName}</p>
+                  <div className="relative col-span-3 mt-3 min-h-72">
+                    <div className="absolute -left-9 w-[105%] p-8 bg-white border border-gray-300 rounded-lg mt-2 shadow-xl z-10">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                          <h5 className="font-semibold mb-6 text-gray-400">
+                            ACTOR
+                          </h5>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col gap-2">
+                              <p className="text-gray-400 mr-12 uppercase">
+                                Name
+                              </p>
+                              <p className="text-gray-400 mr-12 uppercase">
+                                Email
+                              </p>
+                              <p className="text-gray-400 mr-20 uppercase">
+                                ID
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <p>{event.actorName}</p>
+                              <p>{event.targetName}</p>
+                              <p>{event.actorId}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold mb-6 text-gray-400">
+                            ACTION
+                          </h5>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col gap-2">
+                              <p className="text-gray-400 mr-12 uppercase">
+                                Name
+                              </p>
+                              <p className="text-gray-400 mr-20 uppercase">
+                                ID
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <p>{event.action.name}</p>
+                              <p>{event.action.id}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold mb-6 text-gray-400">
+                            DATE
+                          </h5>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col gap-2">
+                              <p className="text-gray-400 mr-12 uppercase">
+                                Readable
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <p>{formatDate(event.occurredAt)}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold mb-6 text-gray-400">
+                            METADATA
+                          </h5>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col gap-2">
+                              <p className="text-gray-400 uppercase">
+                                Description
+                              </p>
+
+                              <p className="text-gray-400 uppercase">
+                                Redirect
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <p>{event.metadata.description}</p>
+                              <p>{event.metadata.redirect}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold mb-6 text-gray-400">
+                            TARGET
+                          </h5>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col">
+                              <p className="text-gray-400 mr-12 uppercase">
+                                Name
+                              </p>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <p>{event.targetName}</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -269,7 +343,7 @@ const ActivityLog = () => {
       </div>
       <button
         onClick={loadMore}
-        className="flex w-full justify-center rounded-b-lg bg-gray-200 text-gray-500 font-semibold py-4"
+        className="flex w-full justify-center rounded-b-lg bg-[#f5f5f5] text-gray-500 font-semibold py-4"
       >
         Load More
       </button>
