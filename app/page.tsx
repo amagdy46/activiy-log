@@ -80,16 +80,7 @@ const ActivityLog = () => {
   }, [isLive, mutate]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPage(1);
     setSearch(e.target.value);
-  };
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFilters({
-      ...filters,
-      [name]: value,
-    });
   };
 
   const exportToCSV = () => {
