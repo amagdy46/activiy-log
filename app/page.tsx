@@ -103,7 +103,6 @@ const ActivityLog = () => {
         <SearchBar
           search={search}
           onSearchChange={handleSearchChange}
-          filters={filters}
           setFilters={setFilters}
           setIsLive={setIsLive}
           isLive={isLive}

@@ -7,7 +7,6 @@ import { exportToCSV } from "../utils";
 type SearchBarProps = {
   search: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  filters: any;
   setFilters: React.Dispatch<React.SetStateAction<any>>;
   setIsLive: React.Dispatch<React.SetStateAction<boolean>>;
   isLive: boolean;
@@ -17,7 +16,6 @@ type SearchBarProps = {
 const SearchBar: React.FC<SearchBarProps> = ({
   search,
   onSearchChange,
-  filters,
   setFilters,
   setIsLive,
   isLive,
