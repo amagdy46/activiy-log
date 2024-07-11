@@ -117,7 +117,7 @@ const ActivityLog = () => {
     );
   };
 
-  if (true)
+  if (error)
     return (
       <div className="flex flex-col items-center justify-center h-full mt-48 p-24">
         <FaExclamationTriangle className="text-red-500 text-6xl" />
